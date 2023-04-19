@@ -30,7 +30,7 @@
             searchParams.set('token_type', token.token_type);
             searchParams.set('expires_in', token.expires_in);
         
-            const newUrl = "http://localhost:3000" + window.location.pathname + '?' + searchParams.toString();
+            const newUrl = "https://maestro-six.vercel.app" + window.location.pathname + '?' + searchParams.toString();
             window.location.replace(newUrl);
         
             // save token to localStorage
