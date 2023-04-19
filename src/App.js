@@ -156,7 +156,7 @@ function App() {
       localStorage.removeItem("token");
       setPlaylists([]);
     }
-  }, [playlists]);
+  }, []);
 
   const handleLogin = () => {
     const authUrl = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
