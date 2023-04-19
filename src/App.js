@@ -156,6 +156,7 @@ function App() {
       localStorage.removeItem("token");
       setPlaylists([]);
     }
+    window.location.hash = "";
   }, []);
 
   const handleLogin = () => {
