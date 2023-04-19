@@ -147,8 +147,8 @@ function App() {
 
   useEffect(() => {
     const tokenParam = window.location.hash.match(/access_token=([^&]*)/);
-    if (tokenParam) {
-      const token = tokenParam[1];
+    if (tokenParam || localStorage.getItem('token')) {
+      const token = tokenParam[1] || localStorage.getItem('token');
       localStorage.setItem("token", token);
       setToken(token);
       getUserPlaylists(token);
@@ -401,7 +401,7 @@ function App() {
         </h1>
       </div>
       <div className="flex w-screen min-h-screen justify-center pt-[89px] pb-[59px] px-4">
-        {token && !playlist && !newPlaylist ? (
+        {localStorage.getItem('token') && !playlist && !newPlaylist ? (
           <div className="flex flex-col items-left justify-center gap-5">
             <h1 className="font-titles font-extrabold tracking-tighter text-3xl md:text-4xl">
               Select a playlist.
@@ -429,7 +429,7 @@ function App() {
                 ))}
             </div>
           </div>
-        ) : token && playlist && !newPlaylist ? (
+        ) : localStorage.getItem('token') && playlist && !newPlaylist ? (
           <div className="flex flex-col w-full px-4 justify-center items-center lg:items-start md:w-2/5 gap-6">
             <h1 className="font-titles font-extrabold tracking-tighter text-3xl md:text-4xl">
               Your Selected Playlist
@@ -622,7 +622,7 @@ function App() {
             </div>
           </div>
         ) : null}
-        {!token ? (
+        {!localStorage.getItem('token') ? (
           <div className="flex flex-col md:flex-row px-24 gap-3 items-center justify-between">
             <div className="flex flex-col w-[50%] gap-3">
               <h1 className="font-titles font-extrabold tracking-tighter text-2xl md:text-5xl">
