@@ -146,8 +146,8 @@ function App() {
   const [exported, setExported] = useState(false);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const tokenParam = params.get("access_token");
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const tokenParam = hashParams.get("access_token");
     if (tokenParam) {
       localStorage.setItem("token", tokenParam);
       setToken(tokenParam);
