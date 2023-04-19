@@ -146,17 +146,18 @@ function App() {
   const [exported, setExported] = useState(false);
 
   useEffect(() => {
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const tokenParam = hashParams.get("access_token");
+    const tokenParam = window.location.hash.match(/access_token=([^&]*)/);
     if (tokenParam) {
-      localStorage.setItem("token", tokenParam);
-      setToken(tokenParam);
-      getUserPlaylists(tokenParam);
+      const token = tokenParam[1];
+      localStorage.setItem("token", token);
+      setToken(token);
+      getUserPlaylists(token);
+      // Replace the hash with a question mark
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
     } else {
       localStorage.removeItem("token");
       setPlaylists([]);
     }
-    window.location.hash = "";
   }, []);
 
   const handleLogin = () => {
