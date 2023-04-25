@@ -30,7 +30,10 @@ Our inital goal was to create a web application that suggested classical pieces 
   * Is user information secure (account info)?
 
 ## Credits 
-Me – Frontend developer for user interface design, API integration
-Matthew DeLorenzo – Backend data processing (music qualities, analysis)
-Brian Chen - Backend developer
-Ken Guo - Backend developer
+Me: Frontend developer for user interface design, API integration
+
+Matthew DeLorenzo: Backend data processing (music qualities, analysis)
+
+Brian Chen: Backend developer
+
+Ken Guo: Backend developer
