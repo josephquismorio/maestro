@@ -153,13 +153,11 @@ function App() {
     localStorage.setItem("token", tokenParam);
     setToken(tokenParam);
     getUserPlaylists(tokenParam);
-    console.log("HI");
     console.log(tokenParam);
     } else {
       localStorage.removeItem("token");
       setPlaylists([]);
     }
-    window.location.hash = "";
   }, []);
 
   const handleLogin = () => {
