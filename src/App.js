@@ -144,6 +144,7 @@ function App() {
   const [token, setToken] = useState("");
   const [newPlaylist, setNewPlaylist] = useState();
   const [exported, setExported] = useState(false);
+  const [recommendType, setRecommendType] = useState(false);
 
   useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
