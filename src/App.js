@@ -144,18 +144,22 @@ function App() {
   const [token, setToken] = useState("");
   const [newPlaylist, setNewPlaylist] = useState();
   const [exported, setExported] = useState(false);
+  const [recommendType, setRecommendType] = useState(false);
 
   useEffect(() => {
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const tokenParam = hashParams.get("access_token");
+    const params = new URLSearchParams(window.location.search);
+    const tokenParam = params.get("access_token");
     if (tokenParam) {
-      localStorage.setItem("token", tokenParam);
-      setToken(tokenParam);
-      getUserPlaylists(tokenParam);
+    localStorage.setItem("token", tokenParam);
+    setToken(tokenParam);
+    getUserPlaylists(tokenParam);
+    console.log("HI");
+    console.log(tokenParam);
     } else {
       localStorage.removeItem("token");
       setPlaylists([]);
     }
+    window.location.hash = "";
   }, []);
 
   const handleLogin = () => {
@@ -252,8 +256,60 @@ function App() {
         liveness: sumAttributes.liveness / audioFeatures.length,
         valence: sumAttributes.valence / audioFeatures.length,
       };
+      
+      let varianceAttributes = audioFeatures.reduce(
+        (acc, audioFeature) => {
+          acc.acousticness += Math.pow(audioFeature.acousticness - avgAttributes.acousticness, 2);
+          acc.danceability += Math.pow(audioFeature.danceability - avgAttributes.danceability, 2);
+          acc.energy += Math.pow(audioFeature.energy - avgAttributes.energy, 2);
+          acc.instrumentalness += Math.pow(audioFeature.instrumentalness - avgAttributes.instrumentalness, 2);
+          acc.liveness += Math.pow(audioFeature.liveness - avgAttributes.liveness, 2);
+          acc.valence += Math.pow(audioFeature.valence - avgAttributes.valence, 2);
+          return acc;
+        },
+        {
+          acousticness: 0,
+          danceability: 0,
+          energy: 0,
+          instrumentalness: 0,
+          liveness: 0,
+          valence: 0,
+        }
+      );
 
-      setPlaylistAttributes(avgAttributes);
+      let stdAttributes = {
+        acousticness: Math.sqrt(varianceAttributes.acousticness / audioFeatures.length),
+        danceability: Math.sqrt(varianceAttributes.danceability / audioFeatures.length),
+        energy: Math.sqrt(varianceAttributes.energy / audioFeatures.length),
+        instrumentalness: Math.sqrt(varianceAttributes.instrumentalness / audioFeatures.length),
+        liveness: Math.sqrt(varianceAttributes.liveness / audioFeatures.length),
+        valence: Math.sqrt(varianceAttributes.valence / audioFeatures.length),
+      };
+
+      const stdEntries = Object.entries(stdAttributes);
+      
+      stdEntries.sort((a,b) => a[1] - b[1]);
+
+      const result = {};
+      for(let i = 0; i < 3; i++) {
+        const [key, _] = stdEntries[i];
+        result[key] = avgAttributes[key];
+      }
+
+      const output = {};
+      stdEntries.forEach(([key]) => {
+        output[key] = key in result ? result[key] : null;
+      });
+
+      //console.log("result: " + JSON.stringify(result));
+      //console.log("output: " + JSON.stringify(output));
+      //console.log("avgAttributes: " + JSON.stringify(avgAttributes));
+      if(recommendType == false){
+        setPlaylistAttributes(avgAttributes);
+      }
+      else{
+        setPlaylistAttributes(output);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -505,14 +561,31 @@ function App() {
               </button>
               <button
                 disabled={genre === ""}
-                onClick={fetchRecommendations}
+                onClick={() => {
+                  setRecommendType(false);
+                  fetchRecommendations();
+                }}
                 className={`w-full bg-green hover:bg-dark-green duration-300 text-white font-titles font-bold text-xs md:text-sm uppercase py-2 px-4 rounded-full ${
                   genre === ""
                     ? "opacity-50 cursor-not-allowed"
                     : "hover:bg-dark-green"
                 }`}
               >
-                Send
+                Send (All Attributes)
+              </button>
+              <button
+                disabled={genre === ""}
+                onClick={() => {
+                  setRecommendType(true);
+                  fetchRecommendations();
+                  }}
+                className={`w-full bg-green hover:bg-dark-green duration-300 text-white font-titles font-bold text-xs md:text-sm uppercase py-2 px-4 rounded-full ${
+                  genre === ""
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-dark-green"
+                }`}
+              >
+                Send (Similar Attributes)
               </button>
             </div>
           </div>
